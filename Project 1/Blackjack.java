@@ -39,7 +39,7 @@ public class Blackjack{
 
 				if(playerHand.sum() <= 21 && dealerHand.sum() < 17) dealerHand.dealCard(deck.getDeck().removeItem());
 
-				if(playerHand.sum() > 21) break;
+				if(playerHand.sum() > 21 || dealerHand.sum() > 21) break;
 				else if(playerHand.sum() >= 17 && dealerHand.sum() >= 17) break;
 			}
 
@@ -54,17 +54,17 @@ public class Blackjack{
 			if(playerHand.sum() == 21 && dealerHand.sum() == 21 && (playerHand.getCards().size() == dealerHand.getCards().size())){ //Both get blackjack in 2 cards
 				System.out.println("It's a tie!");
 				ties++;
+			} else if(dealerHand.sum() != 21 && playerHand.sum() == 21 && playerHand.getCards().size() == 2){ //Player got a blackjack and the dealer didn't
+				System.out.println("The player got a blackjack and wins!");
+				playerWins++;
+			} else if(playerHand.sum() != 21 && dealerHand.sum() == 21 && dealerHand.getCards().size() == 2){ //Dealer got a blackjack and the player didn't
+				System.out.println("The dealer got a blackjack and wins!");
+				dealerWins++;
 			} else if(playerHand.sum() == 21 && dealerHand.sum() == 21 && playerHand.getCards().size() < dealerHand.getCards().size()){ //Player gets 21 in less cards
 				System.out.println("The player wins because they got 21 first!");
 				playerWins++;
 			} else if(playerHand.sum() == 21 && dealerHand.sum() == 21 && playerHand.getCards().size() > dealerHand.getCards().size()){ //Dealer gets 21 in less cards
 				System.out.println("The dealer wins because they got a 21 first!");
-			}
-			else if(dealerHand.sum() != 21 && playerHand.sum() == 21){ //Player got a blackjack and the dealer didn't
-				System.out.println("The player got a blackjack and wins!");
-				playerWins++;
-			} else if(playerHand.sum() != 21 && dealerHand.sum() == 21){ //Dealer got a blackjack and the player didn't
-				System.out.println("The dealer got a blackjack and wins!");
 				dealerWins++;
 			} else if(playerHand.sum() <= 21 && dealerHand.sum() > 21){  //Dealer busts
 				System.out.println("The player wins!");
@@ -75,7 +75,7 @@ public class Blackjack{
 			} else if(playerHand.sum() > 21 && dealerHand.sum() > 21){ //Player and Dealer both bust
 				System.out.println("Both people busted and tied!");
 				ties++;
-			} else if(playerHand.sum() < 21 && dealerHand.sum() < 21){ //Player and Dealer both stand
+			} else if(playerHand.sum() <= 21 && dealerHand.sum() <= 21){ //Player and Dealer both stand
 				if(playerHand.sum() < dealerHand.sum()){ //Dealer had a higher sum
 					System.out.println("The dealer wins!");
 					dealerWins++;
@@ -101,7 +101,8 @@ public class Blackjack{
 		}
 
 		//Print out match statistics
-		System.out.printf("\nRounds played: %s\n", args[1]);
+		System.out.println("\n-----MATCH STATISTICS-----");
+		System.out.printf("Rounds played: %s\n", args[1]);
 		System.out.printf("Dealer wins: %d\n", dealerWins);
 		System.out.printf("Player wins: %d\n", playerWins);
 		System.out.printf("Ties: %d\n", ties);
@@ -109,15 +110,18 @@ public class Blackjack{
 
 	//Get rid of the cards in the player's hands and put them in the discard pile
 	public static void discardCards(){
-		for(int i = 0; i < playerHand.getCards().size()+1; i++){
+		for(int i = 0; i <= playerHand.getCards().size()+1; i++){
 			discardPile.addItem(playerHand.getCards().removeItem());
 		}
 
-		for(int j = 0; j < dealerHand.getCards().size()+1; j++){
+		for(int j = 0; j <= dealerHand.getCards().size()+1; j++){
 			discardPile.addItem(dealerHand.getCards().removeItem());
 		}
 
 		discardPile.addItem(playerHand.getCards().removeItem());
 		discardPile.addItem(dealerHand.getCards().removeItem());
+
+		playerHand.getCards().clear();
+		dealerHand.getCards().clear();
 	}
 }

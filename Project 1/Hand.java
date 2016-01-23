@@ -20,7 +20,7 @@ public class Hand{
 	public int sum(){
 		int sum = 0;
 
-		for(int i = 0; i < cards.size(); i++){
+		for(int i = 0; i < cards.size()+1; i++){
 			if((sum + cards.get(i).value()) > 21) sum += cards.get(i).value2();
 			else if((sum + cards.get(i).value()) <= 21) sum += cards.get(i).value();
 		}

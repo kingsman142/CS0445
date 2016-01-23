@@ -8,7 +8,9 @@ public class Blackjack{
 	private static Shoe deck; //Shoe for the cards
 	private static Hand playerHand; //Player's hand
 	private static Hand dealerHand; //Computer's hand
-	private static RandIndexQueue<Card> discardPile;
+	private static RandIndexQueue<Card> discardPile; //Discard pile
+
+	//Keep track of who wins each round
 	private static int dealerWins;
 	private static int playerWins;
 	private static int ties;
@@ -24,8 +26,8 @@ public class Blackjack{
 
 		for(int i = 0; i < numRounds; i++){
 			System.out.printf("\nRound %d!\n", i+1);
-			System.out.println("Size of shoe: " + deck.getDeck().size());
 
+			//Deal out the initial 2 cards per player
 			playerHand.dealCard(deck.getDeck().removeItem());
 			dealerHand.dealCard(deck.getDeck().removeItem());
 			playerHand.dealCard(deck.getDeck().removeItem());
@@ -33,6 +35,7 @@ public class Blackjack{
 			System.out.printf("Player | %s: %d\n", playerHand.toString(), playerHand.sum());
 			System.out.printf("Dealer | %s: %d\n", dealerHand.toString(), dealerHand.sum());
 
+			//Game loop
 			while(true){
 				if(playerHand.sum() < 17) playerHand.dealCard(deck.getDeck().removeItem());
 

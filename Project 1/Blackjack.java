@@ -18,14 +18,13 @@ public class Blackjack{
 		numRounds = Integer.parseInt(args[1]);
 		playerHand = new Hand("Player");
 		dealerHand = new Hand("Dealer");
-		discardPile = new RandIndexQueue<Card>(24);
+		discardPile = new RandIndexQueue<Card>(deck.getDeck().size());
 
 		deck.getDeck().shuffle();
 
 		for(int i = 0; i < numRounds; i++){
-			System.out.printf("\nRound %d! The shoe is being shuffled!\n", i+1);
-
-			deck.getDeck().shuffle();
+			System.out.printf("\nRound %d!\n", i+1);
+			System.out.println("Size of shoe: " + deck.getDeck().size());
 
 			playerHand.dealCard(deck.getDeck().removeItem());
 			dealerHand.dealCard(deck.getDeck().removeItem());
@@ -88,16 +87,19 @@ public class Blackjack{
 				}
 			}
 
+			//Clear both players' hands
+			discardCards();
+
 			//Prepare for next round
 			//Add discard pile to shoe if shoe size is less than 1/4 the original size of shoe
 			if(deck.getDeck().size() < ((Integer.parseInt(args[0])*52)*.25)){
-				for(int j = 0; j < discardPile.size(); j++){
+				while(discardPile.size() > 0){
 					deck.getDeck().addItem(discardPile.removeItem());
 				}
-			}
 
-			//Clear both players' hands
-			discardCards();
+				System.out.printf("\nReshuffling the deck for round %d!\n", i+2);
+				deck.getDeck().shuffle();
+			}
 		}
 
 		//Print out match statistics
@@ -110,16 +112,13 @@ public class Blackjack{
 
 	//Get rid of the cards in the player's hands and put them in the discard pile
 	public static void discardCards(){
-		for(int i = 0; i <= playerHand.getCards().size()+1; i++){
+		while(playerHand.getCards().size() > 0){
 			discardPile.addItem(playerHand.getCards().removeItem());
 		}
 
-		for(int j = 0; j <= dealerHand.getCards().size()+1; j++){
+		while(dealerHand.getCards().size() > 0){
 			discardPile.addItem(dealerHand.getCards().removeItem());
 		}
-
-		discardPile.addItem(playerHand.getCards().removeItem());
-		discardPile.addItem(dealerHand.getCards().removeItem());
 
 		playerHand.getCards().clear();
 		dealerHand.getCards().clear();

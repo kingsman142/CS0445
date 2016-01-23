@@ -18,14 +18,16 @@ public class Hand{
 	}
 
 	public int sum(){
-		int sum = 0;
+		int sum1 = 0;
+		int sum2 = 0;
 
-		for(int i = 0; i < cards.size()+1; i++){
-			if((sum + cards.get(i).value()) > 21) sum += cards.get(i).value2();
-			else if((sum + cards.get(i).value()) <= 21) sum += cards.get(i).value();
+		for(int i = 0; i < cards.size(); i++){
+			sum1 += cards.get(i).value();
+			sum2 += cards.get(i).value2();
 		}
 
-		return sum;
+		if(sum1 > 21) return sum2;
+		else return sum1;
 	}
 
 	public RandIndexQueue<Card> getCards(){

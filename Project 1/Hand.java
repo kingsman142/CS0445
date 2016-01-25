@@ -5,7 +5,7 @@ This program manages the a hand of cards.  Two instances of this class will be u
 */
 
 public class Hand{
-	private RandIndexQueue<Card> cards = new RandIndexQueue<Card>(12); //Maximum amount of cards that could ever possibly be in a hand when losing (4 aces, 4 2s, 3 3s)
+	private RandIndexQueue<Card> cards = new RandIndexQueue<Card>(22); //Maximum amount of cards that could ever possibly be in a hand when losing (22 aces with 6 decks in the shoe)
 	private String name;
 
 	public Hand(String user){

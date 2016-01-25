@@ -51,22 +51,6 @@ public class Blackjack{
 			if(dealerHand.sum() <= 21) System.out.printf("Dealer | STANDS | %s: %d\n", dealerHand.toString(), dealerHand.sum());
 			else System.out.printf("Dealer | BUSTS | %s: %d\n", dealerHand.toString(), dealerHand.sum());
 
-			/*while(true){
-				if(playerHand.sum() < 17) playerHand.dealCard(deck.getDeck().removeItem());
-
-				if(playerHand.sum() <= 21 && dealerHand.sum() < 17) dealerHand.dealCard(deck.getDeck().removeItem());
-
-				if(playerHand.sum() > 21 || dealerHand.sum() > 21) break;
-				else if(playerHand.sum() >= 17 && dealerHand.sum() >= 17) break;
-			}
-
-			//STAND and BUST statements
-			if(playerHand.sum() <= 21) System.out.printf("Player | STANDS | %s: %d\n", playerHand.toString(), playerHand.sum());
-			else System.out.printf("Player | BUSTS | %s: %d\n", playerHand.toString(), playerHand.sum());
-
-			if(dealerHand.sum() <= 21) System.out.printf("Dealer | STANDS | %s: %d\n", dealerHand.toString(), dealerHand.sum());
-			else System.out.printf("Dealer | BUSTS | %s: %d\n", dealerHand.toString(), dealerHand.sum());*/
-
 			//Win conditions
 			if(playerHand.sum() == 21 && dealerHand.sum() == 21 && (playerHand.getCards().size() == dealerHand.getCards().size())){ //Both get blackjack in 2 cards
 				System.out.println("It's a tie!");

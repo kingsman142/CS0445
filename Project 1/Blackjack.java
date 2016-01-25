@@ -111,7 +111,7 @@ public class Blackjack{
 					deck.getDeck().addItem(discardPile.removeItem());
 				}
 
-				System.out.printf("\nReshuffling the deck for round %d!\n", i+2);
+				System.out.printf("\nReshuffling the shoe for round %d!\n", i+2);
 				deck.getDeck().shuffle();
 			}
 		}

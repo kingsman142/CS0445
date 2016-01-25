@@ -1,5 +1,9 @@
 /*
 James Hahn
+
+This is the main java program file that manages a game of Blackjack.
+The number of cards is determined by a command line argument describing how many decks are in the shoe (first argument).
+The number of rounds played is also determined by a command line argument (second argument).
 */
 
 public class Blackjack{

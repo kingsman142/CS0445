@@ -344,10 +344,11 @@ public class MyStringBuilder
 					for(int j = 0; j < str.length(); j++){
 						CNode newNode = new CNode(str.charAt(j));
 						currNode.next = newNode;
-						currNode = temp.next;
+						currNode = newNode;
+						length++;
 					}
-				} else if(i == offset+1){
-					currNode.next = temp.next;
+				} else if(i == offset+str.length()){
+					currNode.next = temp;
 				}
 
 				temp = temp.next;

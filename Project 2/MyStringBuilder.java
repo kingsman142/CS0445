@@ -301,22 +301,19 @@ public class MyStringBuilder
 		int charMatches = 0;
 
 		for(int i = 0; i < length; i++){
-			if(temp.data == str.charAt(i)){
+			if(temp.data == str.charAt(0)){
 				CNode temp2 = temp.next;
 				charMatches++;
 				for(int j = 1; j < str.length(); j++){
-					System.out.println("i: " + i + ", j: " + j);
-					System.out.println(temp2.data + " and " + str.charAt(i+j));
-					if(temp2.data == str.charAt(i+j)) charMatches++;
-					temp2 = temp2.next;
+					if(temp2.data == str.charAt(j)) charMatches++;
+					else break;
+
+					if(temp2.next != null) temp2 = temp2.next;
 				}
 
-				System.out.println("charMatches: " + charMatches);
+				if(charMatches == str.length())	return i;
 
-				if(charMatches == str.length()){
-					System.out.println("i: " + i);
-					return i;
-				}
+				charMatches = 0;
 			}
 
 			temp = temp.next;
@@ -331,6 +328,32 @@ public class MyStringBuilder
 	// do nothing.
 	public MyStringBuilder insert(int offset, String str)
 	{
+		if(offset == length){
+			append(str);
+		} else if(offset < 0 || offset > length){
+			return this;
+		} else if(offset > 0 && offset < length){
+			CNode startNode = null;
+			CNode currNode = null;
+			CNode temp = firstC;
+
+			for(int i = 0; i < length; i++){
+				if(i == offset-1){
+					currNode = temp;
+				} else if(i == offset){
+					for(int j = 0; j < str.length(); j++){
+						CNode newNode = new CNode(str.charAt(j));
+						currNode.next = newNode;
+						currNode = temp.next;
+					}
+				} else if(i == offset+1){
+					currNode.next = temp.next;
+				}
+
+				temp = temp.next;
+			}
+		}
+
 		return this;
 	}
 

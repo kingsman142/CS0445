@@ -14,9 +14,10 @@ public class Hand{
 	}
 
 	//Deal a card to this hand
-	public void dealCard(Card card){
+	public void dealCard(Card card, boolean print){
 		cards.addItem(card);
-		System.out.println(name + " dealt: " + card.toString());
+
+		if(print) System.out.println(name + " dealt: " + card.toString());
 	}
 
 	//Calculate the sum of the hand
@@ -31,6 +32,11 @@ public class Hand{
 
 		if(sum1 > 21) return sum2;
 		else return sum1;
+	}
+
+	//Return the name of the owner of this hand
+	public String getName(){
+		return name;
 	}
 
 	//Return the cards in the hand

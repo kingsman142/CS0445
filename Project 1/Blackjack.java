@@ -2,8 +2,8 @@
 James Hahn
 
 This is the main java program file that manages a game of Blackjack.
-The number of cards is determined by a command line argument describing how many decks are in the shoe (first argument).
-The number of rounds played is also determined by a command line argument (second argument).
+The number of cards is determined by a command line argument describing how many decks are in the shoe (second argument).
+The number of rounds played is also determined by a command line argument (first argument).
 */
 
 public class Blackjack{
@@ -19,72 +19,90 @@ public class Blackjack{
 	private static int playerWins;
 	private static int ties;
 
+	//Every statement with the condition if(Integer.parseInt(args[0]) <= 10) prevents text from being output
+	//if the # of input rounds is more than 10.  This makes it so if it the program runs 10000 rounds, for example,
+	//it would only print out the rounds where it reshuffled the shoe and the match statistics.
 	public static void main(String[] args){
-		deck = new Shoe(Integer.parseInt(args[0]));
-		numRounds = Integer.parseInt(args[1]);
+		deck = new Shoe(Integer.parseInt(args[1]));
+		numRounds = Integer.parseInt(args[0]);
 		playerHand = new Hand("Player");
 		dealerHand = new Hand("Dealer");
 		discardPile = new RandIndexQueue<Card>(deck.getDeck().size());
 
+		System.out.println("Starting Blackjack with " + args[0] + " rounds and " + args[1] + " decks in the shoe.");
+
 		deck.getDeck().shuffle();
 
 		for(int i = 0; i < numRounds; i++){
-			System.out.printf("\nRound %d!\n", i+1);
+			if(Integer.parseInt(args[0]) <= 10) System.out.printf("\nRound %d!\n", i+1);
 
 			//Deal out the initial 2 cards per player
-			playerHand.dealCard(deck.getDeck().removeItem());
-			dealerHand.dealCard(deck.getDeck().removeItem());
-			playerHand.dealCard(deck.getDeck().removeItem());
-			dealerHand.dealCard(deck.getDeck().removeItem());
-			System.out.printf("Player | %s: %d\n", playerHand.toString(), playerHand.sum());
-			System.out.printf("Dealer | %s: %d\n", dealerHand.toString(), dealerHand.sum());
+			if(Integer.parseInt(args[0]) <= 10){
+				playerHand.dealCard(deck.getDeck().removeItem(), true);
+				dealerHand.dealCard(deck.getDeck().removeItem(), true);
+				playerHand.dealCard(deck.getDeck().removeItem(), true);
+				dealerHand.dealCard(deck.getDeck().removeItem(), true);
+			} else{
+				playerHand.dealCard(deck.getDeck().removeItem(), false);
+				dealerHand.dealCard(deck.getDeck().removeItem(), false);
+				playerHand.dealCard(deck.getDeck().removeItem(), false);
+				dealerHand.dealCard(deck.getDeck().removeItem(), false);
+			}
+			if(Integer.parseInt(args[0]) <= 10) System.out.printf("Player | %s: %d\n", playerHand.toString(), playerHand.sum());
+			if(Integer.parseInt(args[0]) <= 10) System.out.printf("Dealer | %s: %d\n", dealerHand.toString(), dealerHand.sum());
 
 			//Game loop for player
-			while(playerHand.sum() < 17) playerHand.dealCard(deck.getDeck().removeItem());
+			if(Integer.parseInt(args[0]) <= 10) while(playerHand.sum() < 17) playerHand.dealCard(deck.getDeck().removeItem(), true);
+			else while(playerHand.sum() < 17) playerHand.dealCard(deck.getDeck().removeItem(), false);
 
-			if(playerHand.sum() <= 21) System.out.printf("Player | STANDS | %s: %d\n", playerHand.toString(), playerHand.sum());
-			else System.out.printf("Player | BUSTS | %s: %d\n", playerHand.toString(), playerHand.sum());
+			if(Integer.parseInt(args[0]) <= 10){
+				if(playerHand.sum() <= 21) System.out.printf("Player | STANDS | %s: %d\n", playerHand.toString(), playerHand.sum());
+				else System.out.printf("Player | BUSTS | %s: %d\n", playerHand.toString(), playerHand.sum());
+			}
 
 			//Game loop for dealer
-			while(dealerHand.sum() < 17 && playerHand.sum() <= 21) dealerHand.dealCard(deck.getDeck().removeItem());
+			if(Integer.parseInt(args[0]) <= 10) while(dealerHand.sum() < 17 && playerHand.sum() <= 21) dealerHand.dealCard(deck.getDeck().removeItem(), true);
+			else while(dealerHand.sum() < 17 && playerHand.sum() <= 21) dealerHand.dealCard(deck.getDeck().removeItem(), false);
 
-			if(dealerHand.sum() <= 21) System.out.printf("Dealer | STANDS | %s: %d\n", dealerHand.toString(), dealerHand.sum());
-			else System.out.printf("Dealer | BUSTS | %s: %d\n", dealerHand.toString(), dealerHand.sum());
+			if(Integer.parseInt(args[0]) <= 10){
+				if(dealerHand.sum() <= 21) System.out.printf("Dealer | STANDS | %s: %d\n", dealerHand.toString(), dealerHand.sum());
+				else System.out.printf("Dealer | BUSTS | %s: %d\n", dealerHand.toString(), dealerHand.sum());
+			}
 
 			//Win conditions
 			if(playerHand.sum() == 21 && dealerHand.sum() == 21 && (playerHand.getCards().size() == dealerHand.getCards().size())){ //Both get blackjack in 2 cards
-				System.out.println("It's a tie!");
+				if(Integer.parseInt(args[0]) <= 10) System.out.println("It's a tie!");
 				ties++;
 			} else if(dealerHand.sum() != 21 && playerHand.sum() == 21 && playerHand.getCards().size() == 2){ //Player got a blackjack and the dealer didn't
-				System.out.println("The player got a blackjack and wins!");
+				if(Integer.parseInt(args[0]) <= 10) System.out.println("The player got a blackjack and wins!");
 				playerWins++;
 			} else if(playerHand.sum() != 21 && dealerHand.sum() == 21 && dealerHand.getCards().size() == 2){ //Dealer got a blackjack and the player didn't
-				System.out.println("The dealer got a blackjack and wins!");
+				if(Integer.parseInt(args[0]) <= 10) System.out.println("The dealer got a blackjack and wins!");
 				dealerWins++;
 			} else if(playerHand.sum() == 21 && dealerHand.sum() == 21 && playerHand.getCards().size() < dealerHand.getCards().size()){ //Player gets 21 in less cards
-				System.out.println("The player wins because they got 21 first!");
+				if(Integer.parseInt(args[0]) <= 10) System.out.println("The player wins because they got 21 first!");
 				playerWins++;
 			} else if(playerHand.sum() == 21 && dealerHand.sum() == 21 && playerHand.getCards().size() > dealerHand.getCards().size()){ //Dealer gets 21 in less cards
-				System.out.println("The dealer wins because they got a 21 first!");
+				if(Integer.parseInt(args[0]) <= 10) System.out.println("The dealer wins because they got a 21 first!");
 				dealerWins++;
 			} else if(playerHand.sum() <= 21 && dealerHand.sum() > 21){  //Dealer busts
-				System.out.println("The player wins!");
+				if(Integer.parseInt(args[0]) <= 10) System.out.println("The player wins!");
 				playerWins++;
 			} else if(playerHand.sum() > 21 && dealerHand.sum() <= 21){ //Player busts
-				System.out.println("The dealer wins!");
+				if(Integer.parseInt(args[0]) <= 10) System.out.println("The dealer wins!");
 				dealerWins++;
 			} else if(playerHand.sum() > 21 && dealerHand.sum() > 21){ //Player and Dealer both bust
-				System.out.println("Both people busted and tied!");
+				if(Integer.parseInt(args[0]) <= 10) System.out.println("Both people busted and tied!");
 				ties++;
 			} else if(playerHand.sum() <= 21 && dealerHand.sum() <= 21){ //Player and Dealer both stand
 				if(playerHand.sum() < dealerHand.sum()){ //Dealer had a higher sum
-					System.out.println("The dealer wins!");
+					if(Integer.parseInt(args[0]) <= 10) System.out.println("The dealer wins!");
 					dealerWins++;
 				} else if(playerHand.sum() > dealerHand.sum()){ //Player had a higher sum
-					System.out.println("The player wins!");
+					if(Integer.parseInt(args[0]) <= 10) System.out.println("The player wins!");
 					playerWins++;
 				} else if(playerHand.sum() == dealerHand.sum()){ //Player and dealer had the same sum
-					System.out.println("It's a tie!");
+					if(Integer.parseInt(args[0]) <= 10) System.out.println("It's a tie!");
 					ties++;
 				}
 			}
@@ -94,7 +112,7 @@ public class Blackjack{
 
 			//Prepare for next round
 			//Add discard pile to shoe if shoe size is less than 1/4 the original size of shoe
-			if(deck.getDeck().size() < ((Integer.parseInt(args[0])*52)*.25)){
+			if(deck.getDeck().size() < ((Integer.parseInt(args[1])*52)*.25)){
 				while(discardPile.size() > 0){
 					deck.getDeck().addItem(discardPile.removeItem());
 				}
@@ -106,7 +124,7 @@ public class Blackjack{
 
 		//Print out match statistics
 		System.out.println("\n-----MATCH STATISTICS-----");
-		System.out.printf("Rounds played: %s\n", args[1]);
+		System.out.printf("Rounds played: %s\n", args[0]);
 		System.out.printf("Dealer wins: %d\n", dealerWins);
 		System.out.printf("Player wins: %d\n", playerWins);
 		System.out.printf("Ties: %d\n", ties);

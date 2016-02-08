@@ -1,10 +1,20 @@
+/*
+James Hahn
+This file is part of Assignment 2 for CS0445.
+It compares the time taken to perform three different operations (append, insert, delete)
+with three different classes (String, MyStringBuilder, StringBuilder).
+It outputs the total time for operation and the average time taken per character for each operation.
+*/
+
 import java.io.*;
 
 public class Assig2B{
 	public static void main(String[] args) throws IOException{
+		//Create the BufferedReader and check if the file exists
 		BufferedReader testFile = new BufferedReader(new FileReader(args[0]));
 		if(!(new File(args[0])).exists()) System.exit(0);
 
+		//Create a size variable to find average operation times later on
 		double size = 0.0;
 		if(args[0].equals("Test8K.txt")) size = 8000.0;
 		else if(args[0].equals("Test16K.txt")) size = 16000.0;

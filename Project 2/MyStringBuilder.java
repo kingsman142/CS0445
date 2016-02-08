@@ -518,6 +518,44 @@ public class MyStringBuilder
 		return this;
 	}
 
+	//Reverses the MyStringBuilder character sequence
+	public MyStringBuilder reverse(){
+		//Starter variables
+		CNode firstNode = firstC;
+		CNode lastNode = lastC;
+		CNode temp = firstC;
+		CNode oneTemp = firstC;
+		CNode twoTemp = firstC;
+
+		//Special case: there's nothing in MyStringBuilder
+		if(length == 0) return this;
+
+		//Normal case: reverse MyStringBuilder
+		for(int i = 0; i < length; i++){
+			temp = firstNode;
+			oneTemp = firstNode.next;
+			for(int j = 0; j < length-i; j++){
+				if(oneTemp == lastNode && i == 0){
+					firstC = lastNode;
+					firstC.next = temp;
+				} else if(oneTemp == firstNode){
+					oneTemp.next = temp;
+					lastC = temp;
+					lastC.next = null;
+				} else{
+					if(j == length-i-1){
+						oneTemp.next = temp;
+						break;
+					}
+					temp = oneTemp;
+					oneTemp = oneTemp.next;
+				}
+			}
+		}
+
+		return this;
+	}
+
 	// Return as a String the substring of characters from index "start" to
 	// index "end" - 1 within the current MyStringBuilder
 	public String substring(int start, int end)

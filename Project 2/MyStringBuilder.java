@@ -529,6 +529,7 @@ public class MyStringBuilder
 
 		//Special case: there's nothing in MyStringBuilder
 		if(length == 0) return this;
+		else if(length == 1) return this;
 
 		//Normal case: reverse MyStringBuilder
 		for(int i = 0; i < length; i++){
@@ -561,32 +562,41 @@ public class MyStringBuilder
 	public String substring(int start, int end)
 	{
 		//Create a String variable to store the substring and a temp to keep track of traversing the array
-		String s = "";
+		char[] string = new char[end-start];
 		CNode temp = firstC;
+
+		if(end < start) return null; //Invalid index
+		else if(end == start) return String.valueOf(charAt(start)); //Return one character at the given index
+
+		//Make sure the two indices are within their respective bounds
+		if(end > length) end = length;
+		if(start < 0) start = 0;
 
 		//Once the method reaches a point where it should START the substring, then keep
 		//on adding the characters to variable s, until the loop reaches END
 		for(int i = 0; i < end; i++){
-			if(i >= start && i < end) s += temp.data;
+			if(i >= start && i < end) string[i-start] = temp.data;
 			temp = temp.next;
 		}
 
-		return s;
+		return new String(string);
 	}
 
 	// Return the entire contents of the current MyStringBuilder as a String
 	public String toString()
 	{
-		String contents = ""; //The String that will be returned
+		char[] contents = new char[length]; //char array that will be returned as a String
 		CNode node = firstC; //First node to look at and append to the String
+
+		if(length == 0) return null; //Special case: nothing in MyStringBuilder
 
 		//Loop through the entire list and append the characters to the String
 		for(int i = 0; i < length; i++){
-			contents += node.data;
+			contents[i] = node.data;
 			node = node.next;
 		}
 
-		return contents;
+		return new String(contents);
 	}
 
 	// You must use this inner class exactly as specified below.  Note that

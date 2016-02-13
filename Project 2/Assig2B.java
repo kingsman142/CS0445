@@ -1,6 +1,8 @@
 /*
 James Hahn
 This file is part of Assignment 2 for CS0445.
+This program takes one command-line argument for args[0], which is the name of the file to be read in (Test8K.txt, Test16K.txt, Test32K.txt).
+
 It compares the time taken to perform three different operations (append, insert, delete)
 with three different classes (String, MyStringBuilder, StringBuilder).
 It outputs the total time for operation and the average time taken per character for each operation.

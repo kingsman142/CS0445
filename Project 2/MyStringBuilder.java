@@ -95,7 +95,7 @@ public class MyStringBuilder
 	public MyStringBuilder append(MyStringBuilder b)
 	{
 		//If nothing is to be appended, return this object
-		if(b.length() == 0) return this;
+		if(b.length() == 0 || b == null) return this;
 
 		//Add each element of b into this object
 		for(int i = 0; i < b.length(); i++){
@@ -120,7 +120,7 @@ public class MyStringBuilder
 	public MyStringBuilder append(String s)
 	{
 		//If nothing is to be appended, return this object
-		if(s.length() == 0) return this;
+		if(s.length() == 0 || s == null) return this;
 
 		//Add each element of s into this object
 		for(int i = 0; i < s.length(); i++){
@@ -144,7 +144,7 @@ public class MyStringBuilder
 	public MyStringBuilder append(char [] c)
 	{
 		//If nothing is to be appended, return this object
-		if(c.length == 0) return this;
+		if(c.length == 0 || c == null) return this;
 
 		//Add each element of c into this object
 		for(int i = 0; i < c.length; i++){
@@ -201,7 +201,7 @@ public class MyStringBuilder
 			}
 		}
 
-		return '\0';
+		return '\0'; //If the char is not found, return \0
 	}
 
 	// Delete the characters from index "start" to index "end" - 1 in the
@@ -257,7 +257,7 @@ public class MyStringBuilder
 			length -= (end-start);
 			return this;
 		//Special case: delete all the contents in the object
-		} else if(start == 0 && end == length-1){
+		} else if(start == 0 && end == length){
 			firstC = null;
 			lastC = null;
 			length = 0;
@@ -327,6 +327,8 @@ public class MyStringBuilder
 		CNode temp = firstC;
 		int charMatches = 0;
 
+		if(str == null) return -1;
+
 		//This loop traverses the array and keeps track of how many simultaneous character matches it encounters.
 		//Once the loop encounters a str element such that the linked-list node's data is different, it will
 		//immediately stop searching for the rest of the word (str), and just return back to searching the
@@ -372,13 +374,30 @@ public class MyStringBuilder
 			//Create variables to traverse linked-list
 			CNode endNode = null;
 			CNode startNode = null;
+			CNode currNode = null;
 			CNode temp = firstC;
 
-			//Simplified code:
-			//Instead of implementing what's already in the insert(char) method,
-			//just call that method
-			for(int i = 0; i < str.length(); i++){
-				insert(offset+i-1, str.charAt(i));
+			//Inserting loop
+			for(int i = 0; i < length; i++){
+				if(i == offset-1){
+					startNode = temp;
+					endNode = startNode.next;
+
+					CNode newNode = new CNode(str.charAt(0));
+					startNode.next = newNode;
+					currNode = newNode;
+				} else if(i == offset){
+					for(int j = 1; j < str.length(); j++){
+						CNode newNode = new CNode(str.charAt(j));
+						currNode.next = newNode;
+						currNode = newNode;
+						length++;
+					}
+					currNode.next = endNode;
+					length++;
+				}
+
+				temp = temp.next;
 			}
 		//Special case: put the str at the very beginning of the linked-list
 		} else if(offset == 0){
@@ -456,15 +475,32 @@ public class MyStringBuilder
 		//Normal case: offset is within the constraints of the linked-list
 		} else if(offset > 0 && offset < length){
 			//Create variables to traverse linked-list
+			CNode startNode = null;
 			CNode endNode = null;
 			CNode currNode = null;
 			CNode temp = firstC;
 
-			//Simplified code:
-			//Instead of implementing what's already in the insert(char) method,
-			//just call that method
-			for(int i = 0; i < c.length; i++){
-				insert(offset+i-1, c[i]);
+			//Inserting loop
+			for(int i = 0; i < length; i++){
+				if(i == offset-1){
+					startNode = temp;
+					endNode = startNode.next;
+
+					CNode newNode = new CNode(c[0]);
+					startNode.next = newNode;
+					currNode = newNode;
+				} else if(i == offset){
+					for(int j = 1; j < c.length; j++){
+						CNode newNode = new CNode(c[j]);
+						currNode.next = newNode;
+						currNode = newNode;
+						length++;
+					}
+					currNode.next = endNode;
+					length++;
+				}
+
+				temp = temp.next;
 			}
 		//Special case: put the str at the very beginning of the linked-list
 		} else if(offset == 0){
@@ -508,12 +544,69 @@ public class MyStringBuilder
 		if(start <= 0 || start > length || end <= start) return this;
 		//Normal case: start and end are within the constraints of the object
 		else if(start >= 0 && end <= length-1){
-			delete(start, end);
-			insert(start, str);
+			CNode temp = firstC;
+			CNode startNode = null;
+			CNode endNode = null;
+			CNode currNode = null;
+			CNode twoTemp = null;
+
+			for(int i = 0; i < length; i++){
+				if(i == start-1){
+					startNode = temp;
+					twoTemp = temp;
+
+					//Find the "end" node
+					for(int j = i; j < end+1; j++){
+						if(j == end) endNode = twoTemp;
+						twoTemp = twoTemp.next;
+					}
+
+					CNode newNode = new CNode(str.charAt(0));
+					startNode.next = newNode;
+					currNode = newNode;
+				} else if(i == start){
+					for(int j = 1; j < str.length(); j++){
+						CNode newNode = new CNode(str.charAt(j));
+						currNode.next = newNode;
+						currNode = newNode;
+					}
+					currNode.next = endNode;
+				}
+
+				temp = temp.next;
+			}
+
+			length += str.length() - (end-start); //Update the object's length
 		//If end is bigger than the length of the linked-list, just treat it like replacing all the way to length
 		} else if(end >= length){
-			delete(start, length);
-			insert(length, str);
+			CNode temp = firstC;
+			CNode startNode = null;
+			CNode currNode = null;
+
+			for(int i = 0; i < length; i++){
+				if(i == start-1){
+					startNode = temp;
+
+					CNode newNode = new CNode(str.charAt(0));
+					startNode.next = newNode;
+					currNode = newNode;
+				} else if(i == start){
+					for(int j = 1; j < str.length(); j++){
+						if(j == str.length()){
+							lastC = currNode;
+							lastC.next = null;
+						} else{
+							CNode newNode = new CNode(str.charAt(j));
+							currNode.next = newNode;
+							currNode = newNode;
+						}
+					}
+				}
+
+				temp = temp.next;
+			}
+
+			length += str.length() - (length-start); //Update the object's length
 		}
 		return this;
 	}
@@ -525,11 +618,9 @@ public class MyStringBuilder
 		CNode lastNode = lastC;
 		CNode temp = firstC;
 		CNode oneTemp = firstC;
-		CNode twoTemp = firstC;
 
 		//Special case: there's nothing in MyStringBuilder
-		if(length == 0) return this;
-		else if(length == 1) return this;
+		if(length == 0 || length == 1) return this;
 
 		//Normal case: reverse MyStringBuilder
 		for(int i = 0; i < length; i++){
@@ -588,7 +679,7 @@ public class MyStringBuilder
 		char[] contents = new char[length]; //char array that will be returned as a String
 		CNode node = firstC; //First node to look at and append to the String
 
-		if(length == 0) return null; //Special case: nothing in MyStringBuilder
+		if(length == 0) return new String(contents); //Special case: nothing in MyStringBuilder
 
 		//Loop through the entire list and append the characters to the String
 		for(int i = 0; i < length; i++){

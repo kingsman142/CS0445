@@ -145,27 +145,44 @@ public class MyStringBuilder2
 		} else{
 			return this;
 		}
-
-		/*if(node.next == null) return append(node.data);
-		else{
-			append(node.data);
-			return traverseAppend(node.next, pos+1);
-		}*/
 	}
 
 	// Append String s to the end of the current MyStringBuilder, and return
 	// the current MyStringBuilder.  Be careful for special cases!
 	public MyStringBuilder2 append(String s)
 	{
-		if(s.length() == 0) return this;
-		else{
+		if(s.length() == 0 || s == null) return this;
+		else return traverseAppend(s, s.length(), 0);
+		/*else{
 			/*if(length == 0){
 				CNode newNode = new CNode(s.charAt(0));
 				firstC = newNode;
 				length++;
-			}*/
+			}
 			char[] string = s.toCharArray();
 			return append(string);
+		}*/
+	}
+
+	public MyStringBuilder2 traverseAppend(String s, int sLength, int pos){
+		CNode newNode = new CNode(s.charAt(pos));
+		System.out.println("STRING APPEND");
+		if(length > 0 && pos < sLength){
+			System.out.println("(1) APPENDING " + newNode.data + " TO " + lastC.data);
+			lastC.next = newNode;
+			lastC = newNode;
+			length++;
+			System.out.println("LASTC: " + lastC.data);
+
+			if(pos == sLength-1) return this;
+			else return traverseAppend(s, sLength, pos+1);
+		} else if(length == 0){
+			firstC = newNode;
+			lastC = firstC;
+			length++;
+			return traverseAppend(s, sLength, pos+1);
+		} else{
+			return this;
 		}
 	}
 
@@ -173,26 +190,37 @@ public class MyStringBuilder2
 	// return the current MyStringBuilder.  Be careful for special cases!
 	public MyStringBuilder2 append(char [] c)
 	{
-		if(c.length == 0) return this;
-		else{
-			if(length == 0){
-				CNode newNode = new CNode(c[0]);
-				firstC = newNode;
-				length++;
-				return traverseAppend(c, 1);
-			}
-			return traverseAppend(c, 0);
-		}
+		if(c.length == 0 || c == null) return this;
+		else return traverseAppend(c, 0);
 	}
 
 	public MyStringBuilder2 traverseAppend(char[] c, int pos){
-		if(pos == c.length-1) return append(c[c.length-1]);
+		CNode newNode = new CNode(c[pos]);
+
+		if(length > 0 && pos < c.length){
+			lastC.next = newNode;
+			lastC = newNode;
+			length++;
+			System.out.println("LASTC: " + lastC.data);
+
+			if(pos == c.length-1) return this;
+			else return traverseAppend(c, pos+1);
+		} else if(length == 0){
+			firstC = newNode;
+			lastC = firstC;
+			length++;
+			return traverseAppend(c, pos+1);
+		} else{
+			return this;
+		}
+
+		/*if(pos == c.length-1) return append(c[c.length-1]);
 		else if(pos < c.length-1){
 			append(c[pos]);
 			return traverseAppend(c, pos+1);
 		}
 
-		return this;
+		return this;*/
 	}
 
 	// Append char c to the end of the current MyStringBuilder, and
@@ -200,16 +228,24 @@ public class MyStringBuilder2
 	public MyStringBuilder2 append(char c)
 	{
 		CNode newNode = new CNode(c);
+		System.out.println("ADDING A CHARACTER: " + newNode.data);
 
-		if(lastC == null){
-			lastC = newNode;
-			firstC.next = lastC;
-		} else{
+		if(length > 0){
 			lastC.next = newNode;
 			lastC = newNode;
+			length++;
+			System.out.println("LASTC: " + lastC.data);
+
+			return this;
+		} else if(length == 0){
+			firstC = newNode;
+			lastC = firstC;
+			length++;
+
+			return this;
+		} else{
+			return this;
 		}
-		length++;
-		return this;
 	}
 
 	// Return the character at location "index" in the current MyStringBuilder.
@@ -558,10 +594,9 @@ public class MyStringBuilder2
 	}
 
 	public String getChar(CNode node){
+		System.out.println("GETTING " + node.data + " , LASTC: " + lastC.data);
 		if(node == lastC) return String.valueOf(node.data);
-		else{
-			return (node.data + getChar(node.next));
-		}
+		else return (node.data + getChar(node.next));
 	}
 
 	// You must use this inner class exactly as specified below.  Note that

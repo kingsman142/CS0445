@@ -30,7 +30,7 @@ public class Assig3
 		System.out.println(b1);
 		b1.append(c);
 		System.out.println(b1);
-		b1.append('!');  b1.append('!');  // char append
+		b1.append('!');  b1.append('!'); // char append
 		b2.append(" different strings?");
 		System.out.println(b1); // Testing for independence of the StringBuilders
 		System.out.println(b2); // after append.  b1 should be unchanged here

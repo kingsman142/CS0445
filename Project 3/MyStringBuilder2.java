@@ -125,24 +125,27 @@ public class MyStringBuilder2
 	// return the current MyStringBuilder.  Be careful for special cases!
 	public MyStringBuilder2 append(MyStringBuilder2 b)
 	{
-		if(b.length() == 0 || b == null) return this;
-		else return traverseAppend(b.firstC, 0, b.length());
+		if(b.length() == 0 || b == null) return this; //If nothing is to be appended, return this object
+		else return traverseAppend(b.firstC, 0, b.length()); //Add each element of b into this object
 	}
 
+	//Recrusive method to append a MyStringBuilder2 object to this object
 	public MyStringBuilder2 traverseAppend(CNode node, int pos, int bLength){
-		if(length > 0 && pos < bLength){
-			lastC.next = node;
-			lastC = node;
+		CNode newNode = new CNode(node.data);
+
+		if(length > 0 && pos < bLength){ //(Recursive) Normal case: add the new node to the end
+			lastC.next = newNode;
+			lastC = newNode;
 			length++;
 
-			if(node.next == null) return this;
+			if(node.next == null) return this; //Base case: Return the object if the last MyStringBuilder2 element has been appended
 			else return traverseAppend(node.next, pos+1, bLength);
-		} else if(length == 0){
-			firstC = node;
+		} else if(length == 0){ //(Recursive) Special case: set first and last nodes if they are not already set
+			firstC = newNode;
 			lastC = firstC;
 			length++;
 			return traverseAppend(node.next, pos+1, bLength);
-		} else{
+		} else{ //Under any other circumstance return this object
 			return this;
 		}
 	}
@@ -151,37 +154,27 @@ public class MyStringBuilder2
 	// the current MyStringBuilder.  Be careful for special cases!
 	public MyStringBuilder2 append(String s)
 	{
-		if(s.length() == 0 || s == null) return this;
-		else return traverseAppend(s, s.length(), 0);
-		/*else{
-			/*if(length == 0){
-				CNode newNode = new CNode(s.charAt(0));
-				firstC = newNode;
-				length++;
-			}
-			char[] string = s.toCharArray();
-			return append(string);
-		}*/
+		if(s.length() == 0 || s == null) return this; //If nothing is to be appended, return this object
+		else return traverseAppend(s, 0); //Add each element of the String to this object
 	}
 
-	public MyStringBuilder2 traverseAppend(String s, int sLength, int pos){
+	//Helper method for appending a String
+	public MyStringBuilder2 traverseAppend(String s, int pos){
 		CNode newNode = new CNode(s.charAt(pos));
-		System.out.println("STRING APPEND");
-		if(length > 0 && pos < sLength){
-			System.out.println("(1) APPENDING " + newNode.data + " TO " + lastC.data);
+
+		if(length > 0 && pos < s.length()){ //(Recursive) Normal case: add the new node to the end
 			lastC.next = newNode;
 			lastC = newNode;
 			length++;
-			System.out.println("LASTC: " + lastC.data);
 
-			if(pos == sLength-1) return this;
-			else return traverseAppend(s, sLength, pos+1);
-		} else if(length == 0){
+			if(pos == s.length()-1) return this; //Base case: Return the object if the last String element has been appended
+			else return traverseAppend(s, pos+1);
+		} else if(length == 0){ //(Recursive) Special case: set first and last nodes if they are not already set
 			firstC = newNode;
 			lastC = firstC;
 			length++;
-			return traverseAppend(s, sLength, pos+1);
-		} else{
+			return traverseAppend(s, pos+1);
+		} else{ //Under any other circumstance return this object
 			return this;
 		}
 	}
@@ -190,37 +183,29 @@ public class MyStringBuilder2
 	// return the current MyStringBuilder.  Be careful for special cases!
 	public MyStringBuilder2 append(char [] c)
 	{
-		if(c.length == 0 || c == null) return this;
-		else return traverseAppend(c, 0);
+		if(c.length == 0 || c == null) return this; //If nothing is to be appended, return this object
+		else return traverseAppend(c, 0); //Add each element of the char array to this object
 	}
 
+	//Helper method for appending an array of characters
 	public MyStringBuilder2 traverseAppend(char[] c, int pos){
 		CNode newNode = new CNode(c[pos]);
 
-		if(length > 0 && pos < c.length){
+		if(length > 0 && pos < c.length){ //(Recursive) Normal case: add the new node to the end
 			lastC.next = newNode;
 			lastC = newNode;
 			length++;
-			System.out.println("LASTC: " + lastC.data);
 
-			if(pos == c.length-1) return this;
+			if(pos == c.length-1) return this; //Base case: Return this object if the last char has been appended
 			else return traverseAppend(c, pos+1);
-		} else if(length == 0){
+		} else if(length == 0){ //(Recursive) Special case: set first and last nodes if they are not already set
 			firstC = newNode;
 			lastC = firstC;
 			length++;
 			return traverseAppend(c, pos+1);
-		} else{
+		} else{ //Under any other circumstance return this object
 			return this;
 		}
-
-		/*if(pos == c.length-1) return append(c[c.length-1]);
-		else if(pos < c.length-1){
-			append(c[pos]);
-			return traverseAppend(c, pos+1);
-		}
-
-		return this;*/
 	}
 
 	// Append char c to the end of the current MyStringBuilder, and
@@ -228,22 +213,20 @@ public class MyStringBuilder2
 	public MyStringBuilder2 append(char c)
 	{
 		CNode newNode = new CNode(c);
-		System.out.println("ADDING A CHARACTER: " + newNode.data);
 
-		if(length > 0){
+		if(length > 0){ //Normal case: add the new node to the end
 			lastC.next = newNode;
 			lastC = newNode;
 			length++;
-			System.out.println("LASTC: " + lastC.data);
 
 			return this;
-		} else if(length == 0){
+		} else if(length == 0){ //Special case: set first and last nodes fi tehy are not already set
 			firstC = newNode;
 			lastC = firstC;
 			length++;
 
 			return this;
-		} else{
+		} else{ //Under any other circumstance return this object
 			return this;
 		}
 	}
@@ -252,12 +235,13 @@ public class MyStringBuilder2
 	// If index is invalid, throw an IndexOutOfBoundsException.
 	public char charAt(int index)
 	{
-		if(index > length-1 || index < 0) throw new IndexOutOfBoundsException();
-		else return traversionRecursion(firstC, index, 0);
+		if(index > length-1 || index < 0) throw new IndexOutOfBoundsException(); //Check for a valid index
+		else return traversionRecursion(firstC, index, 0); //Find the character
 	}
 
+	//Helper method for finding the character at the given index
 	public char traversionRecursion(CNode node, int index, int pos){
-		if(pos == index) return node.data;
+		if(pos == index) return node.data; //If we are at the index, just return this node's data
 		else return traversionRecursion(node.next, index, pos+1);
 	}
 
@@ -269,39 +253,39 @@ public class MyStringBuilder2
 	// special cases!
 	public MyStringBuilder2 delete(int start, int end)
 	{
-		if(end > length) end = length;
+		if(end > length) end = length; //If the end index is higher than the object's length, then make sure it only deletes until "length"
 
-		if(start < 0 || end <= start) return this;
-		else if(start == 0 && end == length){
+		if(start < 0 || end <= start) return this; //Return this object if the indices are invalid
+		else if(start == 0 && end == length){ //Special case: this is deleting the entire contents of the object
 			length = 0;
 			firstC = null;
 			lastC = null;
 			return this;
-		} else{
+		} else{ //Normal case: delete elements normally
 			return deleteRecurs(0, start, end, null, firstC, firstC.next, length);
 		}
 	}
 
+	//Helper method for deleting a range of nodes AND for deleting a single node
 	public MyStringBuilder2 deleteRecurs(int pos, int start, int end, CNode before, CNode node, CNode after, int leng){
 		//This is for the deleteCharAt() method
 		if(end == -1){
-			//System.out.printf("pos: %d, start: %d, end: %d, before: %s, now: %s, after: %s, leng: %d, length: %d\n", pos, start, end, null, node.data, after.data, leng, length);
-			if(start == length-1 && pos == length-3){
+			if(start == length-1 && pos == length-3){ //Special case: the start index is at the very end of the object
 				lastC = node;
 				lastC.next = null;
 				length--;
 				return this;
-			} else if(pos == start){
+			} else if(pos == start){ //Base case: When the index is found, easily switch next node values
 				before.next = after;
 				length--;
 				return this;
-			} else{
+			} else{ //Traverse the linked-list
 				return deleteRecurs(pos+1, start, end, node, after, after.next, leng);
 			}
 		}
 
 		//The following is for the delete() method
-		if(end >= leng){
+		if(end >= leng){ //Special case: if you have to delete all the way to the end, just make the start-1 index the lastC
 			if(pos == start-1){
 				lastC = node;
 				lastC.next = null;
@@ -310,20 +294,21 @@ public class MyStringBuilder2
 			} else{
 				return deleteRecurs(pos+1, start, end, before, after, after.next, leng);
 			}
-		} else if(pos < start) return deleteRecurs(pos+1, start, end, node, after, after.next, leng);
-		else if(start == 0){
+		} else if(pos < start){ //Traverse the array if we are not at the start index yet
+			return deleteRecurs(pos+1, start, end, node, after, after.next, leng);
+		} else if(start == 0){ //Special case: if you have to delete from the start of the object to the "end" index, just make "end" the firstC
 			if(pos == end) return this;
 
 			firstC = firstC.next;
 			length--;
 			return deleteRecurs(pos+1, start, end, before, after, after.next, leng);
-		} else if(pos >= start && pos <= end && end != leng){
+		} else if(pos >= start && pos <= end && end != leng){ //Normal: start deleting nodes
 			if(pos == end) return this;
 
 			before.next = after;
 			length--;
 			return deleteRecurs(pos+1, start, end, before, after, after.next, leng);
-		} else{
+		} else{ //Under any other circumstance return this object
 			return this;
 		}
 	}
@@ -336,7 +321,7 @@ public class MyStringBuilder2
 	{
 		if(index < 0 || index > length-1) return this; //Do nothing if index is invalid
 
-		if(index == 0) firstC = firstC.next;
+		if(index == 0) firstC = firstC.next; //Special case: easily delete the firstC node
 		else return deleteRecurs(0, index, -1, null, firstC, firstC.next, -1);
 
 		return this;
@@ -349,14 +334,15 @@ public class MyStringBuilder2
 	// what you need to do for this method before implementing it.
 	public int indexOf(String str)
 	{
-		if(str == null) return -1;
+		if(str == null) return -1; //Invalid input
 		else return traverseIndexOf(firstC, 0, str, 0, -1);
 	}
 
+	//Helper method to find the index of a String
 	public int traverseIndexOf(CNode node, int pos, String str, int matches, int startIndex){
-		if(matches == str.length()) return startIndex;
-		else if(pos == length && matches != str.length()) return -1;
-		else if(node.data == str.charAt(matches)){
+		if(matches == str.length()) return startIndex; //Base case: When the entire String is found, return the first index
+		else if(pos == length && matches != str.length()) return -1; //Base case: The String is not found
+		else if(node.data == str.charAt(matches)){ //Recursive case: A character matches with the node
 			if(matches == 0) startIndex = pos;
 			matches++;
 			return traverseIndexOf(node.next, pos+1, str, matches, startIndex);
@@ -370,13 +356,14 @@ public class MyStringBuilder2
 	// do nothing.
 	public MyStringBuilder2 insert(int offset, String str)
 	{
-		if(offset == length) return append(str);
-		else if(offset < 0 || offset > length) return this;
+		if(offset == length) return append(str); //Special case: When offset is at the end of the object, just append the String
+		else if(offset < 0 || offset > length) return this; //Invalid offset value
 		else return traverseInsert(offset, str, 0, 0, firstC);
 	}
 
+	//Helper method for inserting a String
 	public MyStringBuilder2 traverseInsert(int offset, String str, int pos, int insertAmount, CNode node){
-		if(offset == 0 && insertAmount < str.length()){
+		if(offset == 0 && insertAmount < str.length()){ //(Recursive) Special case: offset is at the very beginning, so just make each node firstC and move everything down the linked-list
 			CNode newNode;
 			if(insertAmount == 0) newNode = new CNode(str.charAt(str.length()-1), firstC.next);
 			else newNode = new CNode(str.charAt(str.length()-insertAmount-1), firstC.next);
@@ -385,8 +372,8 @@ public class MyStringBuilder2
 			firstC = newNode;
 			firstC.next = oldFirst;
 			return traverseInsert(offset, str, pos+1, ++insertAmount, null);
-		} else{
-			if(pos >= offset-1 && pos < offset+str.length()-1){
+		} else{ //(Recursive) Normal case: insert the given String
+			if(pos >= offset-1 && pos < offset+str.length()-1){ //The current position is within the constraints to insert the String
 				CNode newNode;
 				if(insertAmount == 0) newNode = new CNode(str.charAt(insertAmount));
 				else newNode = new CNode(str.charAt(insertAmount));
@@ -395,10 +382,10 @@ public class MyStringBuilder2
 				node.next = newNode;
 
 				return traverseInsert(offset, str, pos+1, ++insertAmount, node.next);
-			} else if(insertAmount == str.length()){
+			} else if(insertAmount == str.length()){ //Base case: The entire String has been inserted
 				length += str.length();
 				return this;
-			} else{
+			} else{ //Traverse the linked-list
 				return traverseInsert(offset, str, pos+1, insertAmount, node.next);
 			}
 		}
@@ -410,9 +397,9 @@ public class MyStringBuilder2
 	// do nothing.
 	public MyStringBuilder2 insert(int offset, char c)
 	{
-		if(offset < 0 || offset > length) return this;
-		else if(offset == length) return append(c);
-		else if(offset == 0){
+		if(offset < 0 || offset > length) return this; //Invalid offset value
+		else if(offset == length) return append(c); //Special case: When offset is at the end of the object, just append the char
+		else if(offset == 0){ //Special case: offset is at the very beginning, so just make each node firstC and move everything down the linked-list
 			CNode newNode = new CNode(c);
 
 			newNode.next = firstC;
@@ -423,8 +410,9 @@ public class MyStringBuilder2
 		}
 	}
 
+	//Helper method to insert a character at a given offset value
 	public MyStringBuilder2 traverseInsert(int offset, int pos, char c, CNode now, CNode after){
-		if(pos == offset){
+		if(pos == offset){ //(Base) Normal case: pos is at the offset index so just insert the character
 			CNode newNode = new CNode(c);
 
 			now.next = newNode;
@@ -441,9 +429,9 @@ public class MyStringBuilder2
 	// invalid, do nothing.
 	public MyStringBuilder2 insert(int offset, char [] c)
 	{
-		if(offset < 0 || offset > length) return this;
-		else if(offset == length) return append(c);
-		else if(offset == 0 && c.length == 1){
+		if(offset < 0 || offset > length) return this; //Invalid offset value
+		else if(offset == length) return append(c); //Special case: offset is at the very end of the object, so just append the array of characters
+		else if(offset == 0 && c.length == 1){ //Special case: the character array only has one element to add at the very beginning of the object, so it's an easy insert
 			CNode newNode = new CNode(c[0]);
 
 			newNode.next = firstC;
@@ -454,8 +442,9 @@ public class MyStringBuilder2
 		}
 	}
 
+	//Helper method to insert a character array at a given offset value
 	public MyStringBuilder2 traverseInsert(int offset, char[] c, int pos, int insertAmount, CNode node){
-		if(offset == 0 && insertAmount < c.length){
+		if(offset == 0 && insertAmount < c.length){ //(Recursive) Special case: offset is at the very beginning, so just make each node firstC and move everything down the linked-list
 			CNode newNode;
 			if(insertAmount == 0) newNode = new CNode(c[c.length-1], firstC.next);
 			else newNode = new CNode(c[c.length-insertAmount-1], firstC.next);
@@ -464,8 +453,8 @@ public class MyStringBuilder2
 			firstC = newNode;
 			firstC.next = oldFirst;
 			return traverseInsert(offset, c, pos+1, ++insertAmount, null);
-		} else{
-			if(pos >= offset-1 && pos < offset+c.length-1){
+		} else{ //(Recursive) Normal case: insert the given character array
+			if(pos >= offset-1 && pos < offset+c.length-1){ //The current position is within the constraints to insert the character array
 				CNode newNode;
 				if(insertAmount == 0) newNode = new CNode(c[insertAmount]);
 				else newNode = new CNode(c[insertAmount]);
@@ -474,10 +463,10 @@ public class MyStringBuilder2
 				node.next = newNode;
 
 				return traverseInsert(offset, c, pos+1, ++insertAmount, node.next);
-			} else if(insertAmount == c.length){
+			} else if(insertAmount == c.length){ //Base case: The entire character array has been inserted
 				length += c.length;
 				return this;
-			} else{
+			} else{ //Traverse the linked-list
 				return traverseInsert(offset, c, pos+1, insertAmount, node.next);
 			}
 		}
@@ -498,36 +487,37 @@ public class MyStringBuilder2
 	// end of the MyStringBuilder, then insert.
 	public MyStringBuilder2 replace(int start, int end, String str)
 	{
-		if(end > length) return replaceHelperEnd(start, end, str, null, null, 0, firstC, null, 0);
+		if(end > length) return replaceHelperEnd(start, end, str, null, null, 0, firstC, null, 0); //The end index is greater than the length of the object, so just start appending at the start index
 
-		if(start == 0 && end == length){
+		if(start == 0 && end == length){ //Special case: delete the entire linked-list and essentially construct a new one with the String
 			firstC = null;
 			lastC = null;
 			length = 0;
 			makeBuilder(str, 0);
 			return this;
-		} else if(start < 0 || end <= start) return this;
+		} else if(start < 0 || end <= start) return this; //Invalid input
 		else return replaceHelper(start, end, str, null, null, 0, firstC, null, 0);
 	}
 
+	//Helper method to replace given indices of a linked-list with a String in the middle of the linked-list
 	public MyStringBuilder2 replaceHelper(int start, int end, String str, CNode begin, CNode prev, int pos, CNode node, CNode endNode, int replaceAmount){
-		if(pos == start-1){
+		if(pos == start-1){ //Recursive case: Store the beginning node to link future nodes
 			return replaceHelper(start, end, str, node, prev, pos+1, node.next, endNode, replaceAmount);
-		} else if(pos >= start && pos < end){
+		} else if(pos >= start && pos < end){ //Recursive case: pos is within the constraints to start replacing nodes with new ones
 			CNode newNode = new CNode(str.charAt(pos-start));
 
-			if(pos == start){
+			if(pos == start){ //Start replacing
 				begin.next = newNode;
 				return replaceHelper(start, end, str, begin, newNode, pos+1, node.next, endNode, replaceAmount);
-			} else if(pos-end == -1){
+			} else if(pos-end == -1){ //We are at the end of the word that is to be replaced
 				prev.next = newNode;
 				endNode = node.next;
 				return replaceHelper(start, end, str, begin, newNode, pos+1, node.next, endNode, replaceAmount);
-			} else{
+			} else{ //We are in the middle of the process of replacing
 				prev.next = newNode;
 				return replaceHelper(start, end, str, begin, newNode, pos+1, node.next, endNode, replaceAmount);
 			}
-		} else if(pos >= end && replaceAmount+(end-start) < str.length()){
+		} else if(pos >= end && replaceAmount+(end-start) < str.length()){ //Recursive case: We are past the word in the linked-list that is to be replaced, but nodes still need to be added for the new String
 			if(pos == length-1){
 				CNode newNode = new CNode(str.charAt(replaceAmount+(end-start)));
 				prev.next = newNode;
@@ -537,32 +527,34 @@ public class MyStringBuilder2
 				prev.next = newNode;
 				return replaceHelper(start, end, str, begin, newNode, pos+1, node.next, endNode, ++replaceAmount);
 			}
-		} else if(pos >= end && replaceAmount+(end-start) == str.length()){
+		} else if(pos >= end && replaceAmount+(end-start) == str.length()){ //Base case: Add the very last element of the String to finish the replace process
 			CNode newNode = new CNode(str.charAt(replaceAmount+(end-start)-1));
 
 			prev.next = endNode;
 			newNode.next = endNode;
 			length = length + str.length()-(end-start);
 			return this;
-		} else{
+		} else{ //Traverse the linked-list
 			return replaceHelper(start, end, str, begin, prev, pos+1, node.next, endNode, replaceAmount);
 		}
 	}
 
+	//Helper method to replace given indices of a linked-list with a String at the end of the linked-list
 	public MyStringBuilder2 replaceHelperEnd(int start, int end, String str, CNode begin, CNode prev, int pos, CNode node, CNode endNode, int replaceAmount){
-		end = length;
+		end = length; //Force the end index to be the end of the linked-list so nothing crazy happens
 
-		if(pos == start-1){
+		if(pos == start-1){ //Recursive case: Store the beginning node to link future nodes
 			return replaceHelperEnd(start, end, str, node, prev, pos+1, node.next, null, replaceAmount);
-		} else if(pos >= start && replaceAmount < str.length()){
+		} else if(pos >= start && replaceAmount < str.length()){ //Recursive case: pos is within the constraints to start replacing nodes with new ones
 			CNode newNode = new CNode(str.charAt(pos-start));
-			if(pos == start) begin.next = newNode;
-			else prev.next = newNode;
+			if(pos == start) begin.next = newNode; //Start replacing
+			else prev.next = newNode; //In the middle of the process of replacing
 			lastC = newNode;
 			return replaceHelperEnd(start, end, str, begin, newNode, pos+1, null, null, ++replaceAmount);
-		} else if(pos >= start && replaceAmount >= str.length()){
+		} else if(pos >= start && replaceAmount >= str.length()){ //Base case: The last element of the String has been added, so just return the obect
+			length = length + str.length()-(end-start);
 			return this;
-		} else{
+		} else{ //Traverse the linked-list
 			return replaceHelperEnd(start, end, str, begin, prev, pos+1, node.next, null, replaceAmount);
 		}
 	}
@@ -571,17 +563,18 @@ public class MyStringBuilder2
 	// index "end" - 1 within the current MyStringBuilder
 	public String substring(int start, int end)
 	{
-		if(end < start || start < 0 || end > length) return new String();
+		if(end < start || start < 0 || end > length) return new String(); //Invalid indices
 		else return new String(gatherString(start, end, new char[end-start], 0, 0, firstC));
 	}
 
+	//Helper method to gather the substring of this object
 	public char[] gatherString(int start, int end, char[] c, int arrLoc, int pos, CNode node){
-		if(pos >= start && pos < end){
+		if(pos >= start && pos < end){ //(Recursive) Normal case: pos is within the constraints of the indices, so add the char to the array
 			c[arrLoc++] = node.data;
 			return gatherString(start, end, c, arrLoc, pos+1, node.next);
-		} else if(pos == end){
+		} else if(pos == end){ //Base case: we have gathered the entire substring
 			return c;
-		} else{
+		} else{ //Traverse the linked-list
 			return gatherString(start, end, c, arrLoc, pos+1, node.next);
 		}
 	}
@@ -590,13 +583,18 @@ public class MyStringBuilder2
 	public String toString()
 	{
 		if(length == 0) return new String();
-		else return getChar(firstC);
+		else return new String(getChar(firstC, new char[length], 0));
 	}
 
-	public String getChar(CNode node){
-		System.out.println("GETTING " + node.data + " , LASTC: " + lastC.data);
-		if(node == lastC) return String.valueOf(node.data);
-		else return (node.data + getChar(node.next));
+	//Helper method to convert this object into a String
+	public char[] getChar(CNode node, char[] c, int pos){
+		if(node == lastC){ //Base case: We have reached the end of the linked-list
+			c[pos] = node.data;
+			return c;
+		} else{ //Recursive case: Return the data from
+			c[pos] = node.data;
+			return getChar(node.next, c, pos+1);
+		}
 	}
 
 	// You must use this inner class exactly as specified below.  Note that

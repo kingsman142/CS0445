@@ -559,6 +559,32 @@ public class MyStringBuilder2
 		}
 	}
 
+	//Reverse the object's linked-list
+	public MyStringBuilder2 reverse(){
+		char[] list = new char[length];
+
+		//Special case: there's nothing in MyStringBuilder
+		if(length == 0 || length == 1) return this;
+
+		char[] c = reverseHelper(0, new char[length]);
+		firstC = null;
+		lastC = null;
+		length = 0;
+		makeBuilder(c, 0);
+		return this;
+	}
+
+	//Helper method for reversing the object
+	public char[] reverseHelper(int pos, char[] c){
+		if(pos == length-1){
+			c[pos] = charAt(length-pos-1);
+			return c;
+		} else{
+			c[pos] = charAt(length-pos-1);
+			return reverseHelper(pos+1, c);
+		}
+	}
+
 	// Return as a String the substring of characters from index "start" to
 	// index "end" - 1 within the current MyStringBuilder
 	public String substring(int start, int end)

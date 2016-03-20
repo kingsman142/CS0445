@@ -47,7 +47,7 @@ public class Assig4{
 				}
 				System.out.printf("\nStart position: (%d, %d)\n\n", startX, startY);
 
-				traverseMaze(startY, startX, width, height, maze, startX, startY);
+				traverseMaze(startY, startX, width, height, maze, startX, startY, new ArrayList<String>());
 
 				solutions = 0;
 			}
@@ -60,7 +60,7 @@ public class Assig4{
 		}
 	}
 
-	public static boolean traverseMaze(int currX, int currY, int width, int height, int[][] maze, int startX, int startY){
+	public static boolean traverseMaze(int currX, int currY, int width, int height, int[][] maze, int startX, int startY, ArrayList<String> path){
 		if(maze[currY][currX] == 2){
 			//maze[currY][currX] = 2;
 			//return true;
@@ -86,28 +86,28 @@ public class Assig4{
 
 			if(currX > 0){
 				if(maze[currY][currX-1] == 2){
-					printOutput(maze, startX, startY);
+					printOutput(maze, startX, startY, path);
 					solutions++;
 					//return true;
 				}
 			}
 			if(currY > 0){
 				if(maze[currY-1][currX] == 2){
-					printOutput(maze, startX, startY);
+					printOutput(maze, startX, startY, path);
 					solutions++;
 					//return true;
 				}
 			}
 			if(currX < maze[0].length-1){
 				if(maze[currY][currX+1] == 2){
-					printOutput(maze, startX, startY);
+					printOutput(maze, startX, startY, path);
 					solutions++;
 					//return true;
 				}
 			}
 			if(currY < maze.length-1){
 				if(maze[currY+1][currX] == 2){
-					printOutput(maze, startX, startY);
+					printOutput(maze, startX, startY, path);
 					solutions++;
 					//return true;
 				}
@@ -122,7 +122,9 @@ public class Assig4{
 					// 	System.out.println();
 					// }
 					// System.out.println();
-					found = traverseMaze(currX, currY-1, width, height, maze, startX, startY);
+					path.add("(" + (currY-1) + ", " + currX + ")");
+					System.out.printf("Added (%d, %d) 1\n", currY, currX);
+					found = traverseMaze(currX, currY-1, width, height, maze, startX, startY, path);
 					// System.out.println("RETURNED HERE");
 				}
 			}
@@ -135,7 +137,9 @@ public class Assig4{
 					// 	System.out.println();
 					// }
 					// System.out.println();
-					found = traverseMaze(currX, currY+1, width, height, maze, startX, startY);
+					path.add("(" + (currY+1) + ", " + currX + ")");
+					System.out.printf("Added (%d, %d) 2\n", currY, currX);
+					found = traverseMaze(currX, currY+1, width, height, maze, startX, startY, path);
 				}
 			}
 			if(validMove(maze, currX-1, currY) && !found){
@@ -147,7 +151,9 @@ public class Assig4{
 					// 	System.out.println();
 					// }
 					// System.out.println();
-					found = traverseMaze(currX-1, currY, width, height, maze, startX, startY);
+					path.add("(" + currY + ", " + (currX-1) + ")");
+					System.out.printf("Added (%d, %d) 3\n", currY, currX);
+					found = traverseMaze(currX-1, currY, width, height, maze, startX, startY, path);
 				}
 			}
 			if(validMove(maze, currX+1, currY) && !found){
@@ -159,14 +165,18 @@ public class Assig4{
 					// 	System.out.println();
 					// }
 					// System.out.println();
-					found = traverseMaze(currX+1, currY, width, height, maze, startX, startY);
+					path.add("(" + currY + ", " + (currX+1) + ")");
+					System.out.printf("Added (%d, %d) 4\n", currY, currX);
+					found = traverseMaze(currX+1, currY, width, height, maze, startX, startY, path);
 				}
 			}
 
 			// System.out.printf("maze[%d][%d]: %d is now 0, startX: %d, startY: %d\n", currY, currX, maze[currY][currX], startX, startY);
 			// if(!found) System.out.println("NOT found");
 			// else System.out.println("found");
-			if(!found && (currX != startX || currY != startY)) maze[currY][currX] = 0;
+			if(!found && (currX != startX || currY != startY)){
+				maze[currY][currX] = 0;
+			}
 			// for(int j = 0; j < height; j++){
 			// 	for(int k = 0; k < width; k++){
 			// 		System.out.print(maze[j][k] + " ");
@@ -184,8 +194,8 @@ public class Assig4{
 		else return true;
 	}
 
-	public static void printOutput(int[][] maze, int startX, int startY){
-		ArrayList<String> path = new ArrayList<String>();
+	public static void printOutput(int[][] maze, int startX, int startY, ArrayList<String> path){
+		//ArrayList<String> path = new ArrayList<String>();
 		int x = 0;
 		for(int k = 0; k < maze.length; k++){
 			for(int l = 0; l < maze[0].length; l++){
@@ -193,7 +203,7 @@ public class Assig4{
 					if(maze[k][l] == 7) System.out.print("x ");
 					else if(maze[k][l] == 2) System.out.print("2 ");
 					x++;
-					path.add("(" + k + ", " + l + ")");
+					//path.add("(" + k + ", " + l + ")");
 				}
 				else System.out.print(maze[k][l] + " ");
 			}
@@ -201,6 +211,26 @@ public class Assig4{
 		}
 		System.out.println("Solution found with " + x + " segments");
 		System.out.print("Path: ");
+		/*int currX = startX;
+		int currY = startY;
+		path.add("(" + currY + ", " + currX + ")");
+		for(int j = 0; j < x-1; j++){
+			try{
+				if(maze[currY-1][currX] == 7 || maze[currY-1][currX] == 2){
+					if(maze[currY-1][currX] == 7) path.add("(" + (currY--) + ", " + currX + ")");
+					else{
+						path.add("(" + (currY--) + ", " + currX + ")");
+						break;
+					}
+				} else if(maze[currY+1][currX] == 7 || maze[currY+1][currX] == 2){
+					if(maze[currY+1][currX] == 7) path.add("(" + (currY++) + ", " + currX + ")");
+				} else if(maze[currY][currX-1] == 7 || maze[currY][currX-1] == 2){
+					path.add("(" + currY + ", " + (currX--) + ")");
+				} else if(maze[currY][currX+1] == 7 || maze[currY][currX+1] == 2){
+					path.add("(" + currY + ", " + (currX++) + ")");
+				}
+			}
+		}*/
 		for(int i = 0; i < path.size(); i++){
 			System.out.print(path.get(i) + " ");
 		}

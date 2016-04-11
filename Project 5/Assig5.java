@@ -112,36 +112,38 @@ public class Assig5{
 		Scanner sc = new Scanner(System.in);
 		System.out.print("Enter the word to encode: ");
 		String word = sc.nextLine();
+		StringBuilder path = new StringBuilder();
 		for(char c: word.toCharArray()){
-			System.out.println("Searching the code for " + c);
-			String bitString = searchTree(c, rootNode, new StringBuilder());
+			String bitString = searchTree(c, rootNode, path);
+			path.append('\n');
 			System.out.println(c + " is bit string " + bitString);
 		}
 	}
 
 	public static String searchTree(char c, BinaryNode<Character> curr, StringBuilder bits){
-		System.out.println("1: " + c + " and " + curr.getData());
 		if(curr.getData() == c){
-			System.out.println("2");
-			System.out.println("RETURNING " + bits.toString());
 			return bits.toString();
 		} else if(curr == null){
-			System.out.println("3");
-			System.out.println("curr == null: returning null");
+			bits.deleteCharAt(bits.length()-1);
 			return null;
 		} else{
 			String a = null;
-			System.out.println("4");
+			String b = null;
 			bits.append('0');
-			System.out.println("bits: " + bits.toString());
 			if(curr.getLeftNode() != null){
-				System.out.println("curr.left: " + curr.getLeftNode().getData());
-				if(searchTree(c, curr.getLeftNode(), bits) == null){
-					System.out.println("5");
+				b = searchTree(c, curr.getLeftNode(), bits);
+				if(b == null){
 					bits.deleteCharAt(bits.length()-1);
 					bits.append('1');
 					a = searchTree(c, curr.getRightNode(), bits);
+					if(a == null){
+						bits.deleteCharAt(bits.length()-1);
+					}
+				} else{
+					return bits.toString();
 				}
+			} else{
+				bits.deleteCharAt(bits.length()-1);
 			}
 
 			return a;

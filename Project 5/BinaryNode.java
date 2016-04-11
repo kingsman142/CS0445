@@ -2,16 +2,16 @@ public class BinaryNode<T>{
 	private BinaryNode<T> leftNode;
 	private BinaryNode<T> rightNode;
 	private BinaryNode<T> parentNode;
-	private Character internalData;
+	private char internalData;
 
 	public BinaryNode(){
 		leftNode = null;
 		rightNode = null;
 		parentNode = null;
-		internalData = null;
+		internalData = '\0';
 	}
 
-	public BinaryNode(Character c){
+	public BinaryNode(char c){
 		leftNode = null;
 		rightNode = null;
 		parentNode = null;
@@ -37,11 +37,11 @@ public class BinaryNode<T>{
 		parentNode = data;
 	}
 
-	public void changeData(Character data){
+	public void changeData(char data){
 		internalData = data;
 	}
 
-	public Character getData(){
+	public char getData(){
 		return internalData;
 	}
 

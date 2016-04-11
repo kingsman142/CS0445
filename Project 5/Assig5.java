@@ -114,14 +114,14 @@ public class Assig5{
 		String word = sc.nextLine();
 		for(char c: word.toCharArray()){
 			System.out.println("Searching the code for " + c);
-			String bitString = searchTree(new Character(c), rootNode, new StringBuilder());
+			String bitString = searchTree(c, rootNode, new StringBuilder());
 			System.out.println(c + " is bit string " + bitString);
 		}
 	}
 
-	public static String searchTree(Character c, BinaryNode<Character> curr, StringBuilder bits){
+	public static String searchTree(char c, BinaryNode<Character> curr, StringBuilder bits){
 		System.out.println("1: " + c + " and " + curr.getData());
-		if(curr.getData().compareTo(c) == 0){
+		if(curr.getData() == c){
 			System.out.println("2");
 			System.out.println("RETURNING " + bits.toString());
 			return bits.toString();
@@ -130,6 +130,7 @@ public class Assig5{
 			System.out.println("curr == null: returning null");
 			return null;
 		} else{
+			String a = null;
 			System.out.println("4");
 			bits.append('0');
 			System.out.println("bits: " + bits.toString());
@@ -139,11 +140,11 @@ public class Assig5{
 					System.out.println("5");
 					bits.deleteCharAt(bits.length()-1);
 					bits.append('1');
-					searchTree(c, curr.getRightNode(), bits);
+					a = searchTree(c, curr.getRightNode(), bits);
 				}
 			}
 
-			return null;
+			return a;
 		}
 	}
 }

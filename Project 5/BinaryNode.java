@@ -1,28 +1,28 @@
 public class BinaryNode<T>{
 	private BinaryNode<T> leftNode;
 	private BinaryNode<T> rightNode;
-	private BinaryNode<T> parentNode;
 	private char internalData;
+	private String path;
 
 	public BinaryNode(){
 		leftNode = null;
 		rightNode = null;
-		parentNode = null;
 		internalData = '\0';
+		path = null;
 	}
 
 	public BinaryNode(char c){
 		leftNode = null;
 		rightNode = null;
-		parentNode = null;
 		internalData = c;
+		path = null;
 	}
 
 	public BinaryNode(BinaryNode<T> left, BinaryNode<T> right, BinaryNode<T> parent, Character data){
 		leftNode = left;
 		rightNode = right;
-		parentNode = parent;
 		internalData = data;
+		path = null;
 	}
 
 	public void insertLeft(BinaryNode<T> data){
@@ -31,10 +31,6 @@ public class BinaryNode<T>{
 
 	public void insertRight(BinaryNode<T> data){
 		rightNode = data;
-	}
-
-	public void insertParent(BinaryNode<T> data){
-		parentNode = data;
 	}
 
 	public void changeData(char data){
@@ -51,5 +47,13 @@ public class BinaryNode<T>{
 
 	public BinaryNode<T> getRightNode(){
 		return rightNode;
+	}
+
+	public void setPath(String newPath){
+		path = newPath;
+	}
+
+	public String getPath(){
+		return path;
 	}
 }

@@ -2,11 +2,15 @@ import java.util.*;
 import java.io.*;
 
 public class Assig5{
-	public static BinaryNode<Character> rootNode = null;
-	private static File f = null;
+	public static BinaryNode<Character> rootNode = null; //Stores root node
+	private static File f = null; //Stores file to read from
 	private static Scanner fileRead = null;
-	private static boolean initializeRoot = true;
+	private static boolean initializeRoot = true; //Used for the createTree() method to check if the root has been created yet
 	private static ArrayList<String> treeLetters = new ArrayList<String>();
+	private static int numData = 0;
+	private static String[] table = null;
+
+	private static int currPos = 0;
 
 	public static void main(String[] args){
 		try{
@@ -17,7 +21,9 @@ public class Assig5{
 			f = new File(filename);
 			fileRead = new Scanner(f);
 			String input = "";
-			createTree(rootNode, new StringBuilder());
+			createTree(rootNode, new StringBuilder(), -1);
+			createTable(rootNode);
+			currPos = 0;
 
 			do{
 				System.out.println("Select one of the following by entering the respective letter:");
@@ -33,7 +39,10 @@ public class Assig5{
 					case "B":
 						decodeWord();
 						break;
+					case "C":
+						break;
 					default:
+						System.out.println("\nInvalid input!\n");
 						break;
 				}
 			} while(!input.toUpperCase().equals("C"));
@@ -42,43 +51,38 @@ public class Assig5{
 		}
 	}
 
-	public static void createTree(BinaryNode<Character> parent, StringBuilder path){
+	public static void createTree(BinaryNode<Character> parent, StringBuilder path, int direction){
 		if(initializeRoot){
 			rootNode = new BinaryNode<Character>();
-			//System.out.println("Initialized root!");
 			initializeRoot = false;
 			fileRead.nextLine();
-			createTree(rootNode, path);
+			createTree(rootNode, path, 0);
 		} else{
 			String line = null;
 			if(fileRead.hasNextLine()) line = fileRead.nextLine();
-			//System.out.println("Line: " + line);
 			if(line != null){
 				if(line.equals("I")){
 					if(parent.getLeftNode() == null){
-						//System.out.println("LeftNode is null");
 						BinaryNode<Character> newNodeLeft = new BinaryNode<Character>();
 						parent.insertLeft(newNodeLeft);
 						path.append('0');
-						createTree(newNodeLeft, path);
+						createTree(newNodeLeft, path, 0);
 						path.deleteCharAt(path.length()-1);
 					} else if(parent.getRightNode() == null){
-						//System.out.println("RightNode is null");
 						BinaryNode<Character> newNodeRight = new BinaryNode<Character>();
 						parent.insertRight(newNodeRight);
 						path.append('1');
-						createTree(newNodeRight, path);
+						createTree(newNodeRight, path, 1);
 						path.deleteCharAt(path.length()-1);
 					}
 				} else if(line.charAt(0) == 'L'){
 					BinaryNode<Character> newNode = new BinaryNode<Character>(line.charAt(2));
-					treeLetters.add(String.valueOf(line.charAt(2)));
-					//treeLetters.add(path.toString());
+					numData++;
 					if(parent.getLeftNode() == null){
-						//System.out.println("Adding leaf to Left child!");
+						newNode.setPath(path.toString() + '0');
 						parent.insertLeft(newNode);
 					} else{
-						//System.out.println("Adding leaf to Right child!");
+						newNode.setPath(path.toString() + '1');
 						parent.insertRight(newNode);
 					}
 				}
@@ -86,33 +90,29 @@ public class Assig5{
 
 			line = null;
 			if(fileRead.hasNextLine()) line = fileRead.nextLine();
-			//System.out.println("Line2: " + line);
 			if(line != null){
 				if(line.equals("I")){
 					if(parent.getLeftNode() == null){
-						//System.out.println("LeftNode is null");
 						BinaryNode<Character> newNodeLeft = new BinaryNode<Character>();
 						parent.insertLeft(newNodeLeft);
 						path.append('0');
-						createTree(newNodeLeft, path);
+						createTree(newNodeLeft, path, 0);
 						path.deleteCharAt(path.length()-1);
 					} else if(parent.getRightNode() == null){
-						//System.out.println("RightNode is null");
 						BinaryNode<Character> newNodeRight = new BinaryNode<Character>();
 						parent.insertRight(newNodeRight);
 						path.append('1');
-						createTree(newNodeRight, path);
+						createTree(newNodeRight, path, 1);
 						path.deleteCharAt(path.length()-1);
 					}
 				} else if(line.charAt(0) == 'L'){
 					BinaryNode<Character> newNode = new BinaryNode<Character>(line.charAt(2));
-					treeLetters.add(String.valueOf(line.charAt(2)));
-					treeLetters.add(path.toString());
+					numData++;
 					if(parent.getLeftNode() == null){
-						//System.out.println("Adding leaf to Left child!");
+						newNode.setPath(path.toString() + '0');
 						parent.insertLeft(newNode);
 					} else{
-						//System.out.println("Adding leaf to Right child!");
+						newNode.setPath(path.toString() + '1');
 						parent.insertRight(newNode);
 					}
 				}
@@ -128,39 +128,52 @@ public class Assig5{
 		String word = sc.nextLine();
 		StringBuilder path = new StringBuilder();
 		for(char c: word.toCharArray()){
-			String bitString = searchTree(c, rootNode, path);
+			if(searchTree(c, rootNode, path) == null){
+				path = new StringBuilder();
+				break;
+			}
+			if(path.length() == 0) break;
 			path.append('\n');
-			//System.out.println(c + " is bit string " + bitString);
 		}
-		System.out.println(path);
+		if(path.length() > 0) System.out.println("\nYour huffman code: \n" + path);
+		else System.out.println("\nYou entered an incorrect string of characters!\n");
 	}
 
-	public static String decodeWord(){
+	public static void decodeWord(){
 		BinaryNode<Character> curr = rootNode;
 		StringBuilder word = new StringBuilder();
 
 		Scanner sc = new Scanner(System.in);
-		System.out.println("The encoding table: ");
+		System.out.println("\nThe encoding table: ");
 		printTable();
 		System.out.print("\nEnter a bitstring representation to decode: ");
 		String bitString = sc.nextLine();
 
+		int counter = 1;
 		for(char c: bitString.toCharArray()){
 			if(c == '0'){
 				curr = curr.getLeftNode();
 			} else if(c == '1'){
 				curr = curr.getRightNode();
+			} else{
+				System.out.println("\nYou entered an invalid Huffman bitstring!\n");
+				return;
 			}
 
 			if(curr.getData() != '\0'){
 				word.append(curr.getData());
 				curr = rootNode;
 			}
+
+			if(counter == bitString.length() && !curr.equals(rootNode)){
+				word = new StringBuilder();
+				break;
+			}
+			counter++;
 		}
 
-		String wordRep = word.toString();
-		System.out.println("The word: " + wordRep + "\n");
-		return wordRep;
+		if(word.length() > 0) System.out.println("The word: " + word.toString() + "\n");
+		else System.out.println("\nYou entered an invalid Huffman bitstring!\n");
 	}
 
 	public static String searchTree(char c, BinaryNode<Character> curr, StringBuilder bits){
@@ -168,6 +181,8 @@ public class Assig5{
 			return bits.toString();
 		} else if(curr == null){
 			bits.deleteCharAt(bits.length()-1);
+			return null;
+		} else if(Character.toUpperCase(curr.getData()) != curr.getData()){
 			return null;
 		} else{
 			String a = null;
@@ -194,14 +209,27 @@ public class Assig5{
 	}
 
 	private static void printLetters(){
-		for(String a: treeLetters){
-			if(a.length() == 1) System.out.print(a);
+		for(int i = 0; i < table.length; i += 2){
+			System.out.print(table[i]);
+		}
+	}
+
+	private static void createTable(BinaryNode<Character> curr){
+		if(table == null) table = new String[numData*2];
+		if(curr.getData() == '\0'){
+			createTable(curr.getLeftNode());
+			createTable(curr.getRightNode());
+		} else{
+			table[currPos++] = String.valueOf(curr.getData());
+			table[currPos++] = curr.getPath();
 		}
 	}
 
 	private static void printTable(){
-		for(String a: treeLetters){
-			if(a.length() > 1) System.out.println(a);
+		for(int i = 0; i < table.length; i += 2){
+			System.out.println(table[i] + ": " + table[i+1]);
 		}
 	}
+
+
 }

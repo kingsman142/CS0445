@@ -1,17 +1,17 @@
 public class BinaryNode<T>{
 	private BinaryNode<T> leftNode; //Left Child
 	private BinaryNode<T> rightNode; //Right Child
-	private char internalData; //Character data
+	private T internalData; //Character data
 	private String path; //Path of this node in the tree
 
 	public BinaryNode(){
 		leftNode = null;
 		rightNode = null;
-		internalData = '\0';
+		internalData = null;
 		path = null;
 	}
 
-	public BinaryNode(char c){
+	public BinaryNode(T c){
 		leftNode = null;
 		rightNode = null;
 		internalData = c;
@@ -29,12 +29,12 @@ public class BinaryNode<T>{
 	}
 
 	//Set the node data
-	public void changeData(char data){
+	public void changeData(T data){
 		internalData = data;
 	}
 
 	//Get the node data
-	public char getData(){
+	public T getData(){
 		return internalData;
 	}
 

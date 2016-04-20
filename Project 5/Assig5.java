@@ -59,6 +59,7 @@ public class Assig5{
 			String input = "";
 			createTree(rootNode, new StringBuilder(), -1);
 			createTable(rootNode);
+			System.out.println("Table created");
 
 			do{
 				System.out.println("Select one of the following by entering the respective letter:");
@@ -66,7 +67,7 @@ public class Assig5{
 				System.out.println("(B) Decode a Huffman code");
 				System.out.println("(C) Quit the program");
 				System.out.print("Input: ");
-				input = sc.next();
+				input = sc.nextLine();
 				System.out.println();
 
 				switch(input.toUpperCase()){
@@ -117,7 +118,7 @@ public class Assig5{
 					}
 				} else if(line.charAt(0) == 'L'){ //'L' means create a leaf node with some letter (read on the same line) as its data
 					char charData = line.charAt(2);
-					BinaryNode<Character> newNode = new BinaryNode<Character>(charData);
+					BinaryNode<Character> newNode = new BinaryNode<Character>(new Character(charData));
 					numData++;
 
 					//Set the value of the lowest char so we can make the table later on
@@ -154,7 +155,7 @@ public class Assig5{
 					}
 				} else if(line.charAt(0) == 'L'){ //'L' means create a leaf node with some letter (read on the same line) as its data
 					char charData = line.charAt(2);
-					BinaryNode<Character> newNode = new BinaryNode<Character>(charData);
+					BinaryNode<Character> newNode = new BinaryNode<Character>(new Character(charData));
 					numData++;
 
 					//Set the value of the lowest char so we can make the table later on
@@ -184,6 +185,11 @@ public class Assig5{
 		String word = sc.nextLine();
 		StringBuilder path = new StringBuilder();
 		for(char c: word.toCharArray()){
+			if(Character.toUpperCase(c) != c){ //Special case: the user entered a word where at least one letter was lower case!  This is invalid input!
+				System.out.println("\nYou entered an invalid string of characters!\n");
+				return;
+			}
+
 			if(searchTree(c, rootNode, path) == null){
 				path = new StringBuilder();
 				break;
@@ -202,7 +208,7 @@ public class Assig5{
 		StringBuilder word = new StringBuilder();
 
 		Scanner sc = new Scanner(System.in);
-		System.out.println("\nThe encoding table: ");
+		System.out.println("The encoding table: ");
 		printTable();
 		System.out.print("\nEnter a bitstring representation to decode: ");
 		String bitString = sc.nextLine();
@@ -218,8 +224,8 @@ public class Assig5{
 				return;
 			}
 
-			if(curr.getData() != '\0'){
-				word.append(curr.getData());
+			if(curr.getData() != null){
+				word.append(curr.getData().charValue());
 				curr = rootNode;
 			}
 
@@ -236,14 +242,10 @@ public class Assig5{
 
 	//Searches the binary tree for a character, and returns the path of that node to the program
 	public static String searchTree(char c, BinaryNode<Character> curr, StringBuilder bits){
-		if(curr.getData() == c){ //Base case: we found the character!
-			return bits.toString();
-		} else if(curr == null){ //Base case: backtrack and delete the current path position in the bits StringBuilder
+		if(curr == null){ //Base case: backtrack and delete the current path position in the bits StringBuilder
 			bits.deleteCharAt(bits.length()-1);
 			return null;
-		} else if(Character.toUpperCase(curr.getData()) != curr.getData()){ //Special case: the user entered a word where at least one letter was lower case!  This is invalid input!
-			return null;
-		} else{
+		} else if(curr.getData() == null){
 			String a = null;
 			String b = null;
 			bits.append('0'); //Append '0' to the current path because we're going down the left side
@@ -252,7 +254,7 @@ public class Assig5{
 				if(b == null){ //If we returned null, traverse down the right subtree
 					bits.deleteCharAt(bits.length()-1);
 					bits.append('1'); //Append '1' to the current path because we're going down the right side
-					a = searchTree(c, curr.getRightNode(), bits); //Recursively search for the letter int he right subtree
+					a = searchTree(c, curr.getRightNode(), bits); //Recursively search for the letter in the right subtree
 					if(a == null){
 						bits.deleteCharAt(bits.length()-1);
 					}
@@ -264,7 +266,11 @@ public class Assig5{
 			}
 
 			return a;
+		} else if(curr.getData().charValue() == c){ //Base case: we found the character!
+			return bits.toString();
 		}
+
+		return null;
 	}
 
 	//Prints out all of the possible characters in the tree.
@@ -278,7 +284,7 @@ public class Assig5{
 	//Creates the Huffman table for future reference
 	private static void createTable(BinaryNode<Character> curr){
 		if(table == null) table = new String[numData*2];
-		if(curr.getData() == '\0'){
+		if(curr.getData() == null){
 			createTable(curr.getLeftNode());
 			createTable(curr.getRightNode());
 		} else{

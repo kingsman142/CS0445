@@ -1,2 +1,3 @@
 # CS0445
-Stores all projects from my CS0445 (Data Structures) class.
+
+CS0445 (Data Structures) in Spring 2016 at the University of Pittsburgh
